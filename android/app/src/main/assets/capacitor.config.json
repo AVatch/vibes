@@ -1,0 +1,13 @@
+{
+  "appId": "com.vibes.app",
+  "appName": "vibes",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}
