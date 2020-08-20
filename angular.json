@@ -40,8 +40,8 @@
               }
             ],
             "scripts": [
-              "node_modules/p5/lib/p5.min.js",
-              "node_modules/p5/lib/addons/p5.sound.min.js"
+              "node_modules/p5/lib/p5.js",
+              "node_modules/p5/lib/addons/p5.sound.js"
             ]
           },
           "configurations": {
