@@ -1,6 +1,12 @@
-declare var p5: any;
+declare const p5: any;
+
+declare function require(name: string);
+const { connect, createLocalTracks } = require("twilio-video");
 
 import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
+import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
+
+import { take } from "rxjs/operators";
 
 @Component({
   selector: "app-home",
@@ -8,18 +14,22 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
   styleUrls: ["home.page.scss"],
 })
 export class HomePage implements OnInit, OnDestroy, AfterViewInit {
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.connectToRoom();
+  }
 
   ngOnDestroy() {}
 
   ngAfterViewInit() {
-    new p5((sketch) => {
-      sketch.preload = () => this.preload(sketch);
-      sketch.setup = () => this.setup(sketch);
-      sketch.draw = () => this.draw(sketch);
-    });
+    // setTimeout(() => {
+    //   new p5((sketch) => {
+    //     sketch.preload = () => this.preload(sketch);
+    //     sketch.setup = () => this.setup(sketch);
+    //     sketch.draw = () => this.draw(sketch);
+    //   });
+    // }, 300);
   }
 
   // ----------------------------
@@ -34,6 +44,67 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
   //    audio streams from the other
   //    participants and merge it
   // ----------------------------
+
+  private tokenGrantEndpoint = "https://fb654bd831ce.ngrok.io";
+  private roomName = "room-01";
+  private identity = Math.random().toString(36).substr(2, 9);
+  private headers: HttpHeaders = new HttpHeaders({
+    "Content-Type": "application/json",
+  });
+
+  connectToRoom() {
+    let params: HttpParams = new HttpParams();
+    this.http
+      .get<{ token: string }>(
+        `${this.tokenGrantEndpoint}/grant/${this.identity}`,
+        {
+          headers: this.headers,
+        }
+      )
+      .pipe(take(1))
+      .subscribe((res) => {
+        console.log(res);
+      });
+
+    // createLocalTracks({
+    //   audio: true,
+    // })
+    //   .then((localTracks) => {
+    //     return connect(keys.twilio.accessToken, {
+    //       name: roomName,
+    //       tracks: localTracks,
+    //     });
+    //     // console.log(localTracks);
+    //     // console.log(localTracks[0].kind);
+    //     // console.log(localTracks[0].mediaStreamTrack);
+    //   })
+    //   .then((room) => {
+    //     console.log(`Connected to Room: ${room.name}`);
+    //     // Log your Client's LocalParticipant in the Room
+    //     const localParticipant = room.localParticipant;
+    //     console.log(
+    //       `Connected to the Room as LocalParticipant "${localParticipant.identity}"`
+    //     );
+    //     // Log any Participants already connected to the Room
+    //     room.participants.forEach((participant) => {
+    //       console.log(
+    //         `Participant "${participant.identity}" is connected to the Room`
+    //       );
+    //     });
+    //     // Log new Participants as they connect to the Room
+    //     room.once("participantConnected", (participant) => {
+    //       console.log(
+    //         `Participant "${participant.identity}" has connected to the Room`
+    //       );
+    //     });
+    //     // Log Participants as they disconnect from the Room
+    //     room.once("participantDisconnected", (participant) => {
+    //       console.log(
+    //         `Participant "${participant.identity}" has disconnected from the Room`
+    //       );
+    //     });
+    //   });
+  }
 
   // ----------------------------
   // rendering business

@@ -52,15 +52,19 @@
  *
  */
 
-import './zone-flags';
+import "./zone-flags";
 
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
 
-import 'zone.js/dist/zone';  // Included with Angular CLI.
-
+import "zone.js/dist/zone"; // Included with Angular CLI.
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+
+import "zone.js/dist/webapis-rtc-peer-connection";
+import "zone.js/dist/zone-patch-user-media";
+
+(window as any).global = window;
