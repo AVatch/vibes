@@ -8,6 +8,8 @@ import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
 
 import { take } from "rxjs/operators";
 
+import { keys } from "./../../environments/keys";
+
 @Component({
   selector: "app-home",
   templateUrl: "home.page.html",
@@ -45,7 +47,7 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
   //    participants and merge it
   // ----------------------------
 
-  private tokenGrantEndpoint = "https://fb654bd831ce.ngrok.io";
+  private tokenGrantEndpoint = keys.grantUrl;
   private roomName = "room-01";
   private identity = Math.random().toString(36).substr(2, 9);
   private headers: HttpHeaders = new HttpHeaders({
