@@ -74,11 +74,11 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
 
   private visualizeWaveform(sketch) {
     //make waveform usable
-    const waveform = this.fft.waveform(1024);
+    const waveform = this.fft.waveform(this.fftBins);
     const waveInter = p5.prototype.floor(waveform.length / this.resolution);
 
     let reducedWave = [];
-    for (var i = 0; i < this.resolution; i++) {
+    for (let i = 0; i < this.resolution; i++) {
       reducedWave.push(waveform[i * waveInter]);
     }
 
