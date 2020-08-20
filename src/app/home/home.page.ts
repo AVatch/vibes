@@ -8,23 +8,6 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
   styleUrls: ["home.page.scss"],
 })
 export class HomePage implements OnInit, OnDestroy, AfterViewInit {
-  // ------------------------
-
-  private canvasSizeX = 750;
-  private canvasSizeY = 750;
-
-  private resolution = 100;
-
-  private r = this.canvasSizeX * 0.3;
-
-  private fft;
-  private fftSmoothing = 0.8;
-  private fftBins = 512;
-
-  private mic;
-
-  // ------------------------
-
   constructor() {}
 
   ngOnInit() {}
@@ -39,7 +22,38 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  // ------------------------
+  // ----------------------------
+  // audio processing business
+  //    Garble up the audio from
+  //    the microphone
+  // ----------------------------
+
+  // ----------------------------
+  // webRTC business
+  //    Connect to a room and pull
+  //    audio streams from the other
+  //    participants and merge it
+  // ----------------------------
+
+  // ----------------------------
+  // rendering business
+  //    Create the circular rings
+  //    representing the user and
+  //    the crowd.
+  // ----------------------------
+
+  private canvasSizeX = 750;
+  private canvasSizeY = 750;
+
+  private resolution = 100;
+
+  private r = this.canvasSizeX * 0.3;
+
+  private fft;
+  private fftSmoothing = 0.8;
+  private fftBins = 512;
+
+  private mic;
 
   private preload(sketch: any) {}
 
