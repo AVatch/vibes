@@ -9,6 +9,7 @@ import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
 import { take } from "rxjs/operators";
 
 import { keys } from "./../../environments/keys";
+import { errorMonitor } from "events";
 
 @Component({
   selector: "app-home",
@@ -55,6 +56,11 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
   });
 
   connectToRoom() {
+    if (!(this.tokenGrantEndpoint && this.tokenGrantEndpoint !== undefined)) {
+      alert("Improperly Configured");
+      return;
+    }
+
     this.http
       .get<{ token: string }>(
         `${this.tokenGrantEndpoint}/grant/${this.identity}`,
