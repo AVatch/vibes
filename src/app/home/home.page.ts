@@ -1,4 +1,4 @@
-import * as p5 from "p5";
+declare var p5: any;
 
 import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
 
@@ -10,7 +10,16 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
 export class HomePage implements OnInit, OnDestroy, AfterViewInit {
   // ------------------------
 
-  private p5: any;
+  private canvasSizeX = 500;
+  private canvasSizeY = 500;
+
+  private resolution = 50;
+
+  private r = this.canvasSizeX * 0.3;
+
+  private fft;
+
+  private mic;
 
   // ------------------------
 
@@ -21,47 +30,82 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy() {}
 
   ngAfterViewInit() {
-    this.createCanvas();
+    new p5((sketch) => {
+      sketch.preload = () => this.preload(sketch);
+      sketch.setup = () => this.setup(sketch);
+      sketch.draw = () => this.draw(sketch);
+    });
   }
 
   // ------------------------
 
-  private createCanvas() {
-    this.p5 = new p5((sketch) => {
-      let coords = [40, 40, 80, 60, 100, 100, 60, 120, 50, 150];
-      let song;
+  private preload(sketch: any) {}
 
-      sketch.setup = () => {
-        sketch.createCanvas(256, 256).parent("sketch-canvas");
+  private setup(sketch: any) {
+    // Create the canvas
+    sketch
+      .createCanvas(this.canvasSizeX, this.canvasSizeY)
+      .parent("sketch-canvas");
 
-        // sketch.soundFormats("mp3");
-        // song = p.loadSound("assets/Kenney_Floreat_-_02_-_Crucify.mp3");
-      };
+    // Create the FFT analyzer
+    this.fft = new p5.FFT();
 
-      sketch.loaded = () => {
-        // song.play();
-      };
+    // Define the mic input and connect it to the FFT
+    this.mic = new p5.AudioIn();
+    this.mic.connect(this.fft);
 
-      sketch.draw = () => {
-        // sketch.background(255);
-        // sketch.fill(0);
-        // sketch.rect(sketch.width / 2, sketch.height / 2, 50, 50);
+    // Ask permission and start w mic
+    this.enableMic();
+  }
 
-        sketch.background(255);
-        sketch.noFill();
-        sketch.stroke(0);
-        sketch.beginShape();
-        sketch.curveVertex(40, 40);
-        sketch.curveVertex(40, 40);
-        sketch.curveVertex(80, 60);
-        sketch.curveVertex(100, 100);
-        sketch.curveVertex(60, 120);
-        sketch.curveVertex(50, 150);
-        sketch.curveVertex(50, 150);
-        sketch.endShape();
+  private loaded(sketch: any) {}
 
-        // once FFT is done, connect w https://p5js.org/learn/curves.html
-      };
-    });
+  private draw(sketch: any) {
+    sketch.background(51);
+
+    this.visualizeWaveform(sketch);
+  }
+
+  private enableMic() {
+    this.mic.start();
+  }
+
+  private visualizeWaveform(sketch) {
+    //make waveform usable
+    const waveform = this.fft.waveform();
+    const waveInter = p5.prototype.floor(waveform.length / this.resolution);
+
+    let reducedWave = [];
+    for (var i = 0; i < this.resolution; i++) {
+      reducedWave.push(waveform[i * waveInter]);
+    }
+
+    sketch.beginShape();
+    sketch.noFill();
+    sketch.stroke(255, 204, 0);
+    sketch.strokeWeight(4);
+    sketch.translate(sketch.width / 2, sketch.height / 2);
+    for (let i = 0; i < this.resolution; i++) {
+      const off = p5.prototype.map(
+        reducedWave[i],
+        -1,
+        1,
+        -this.r / 2,
+        this.r / 2
+      );
+
+      const angle = p5.prototype.map(
+        i,
+        0,
+        this.resolution,
+        0,
+        p5.prototype.TWO_PI
+      );
+      const y = (this.r - this.r * 0.1 + off) * p5.prototype.sin(angle);
+      const x = (this.r - this.r * 0.1 + off) * p5.prototype.cos(angle);
+
+      sketch.vertex(x, y);
+    }
+    sketch.endShape(p5.prototype.CLOSE);
   }
 }
