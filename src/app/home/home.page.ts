@@ -10,14 +10,16 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
 export class HomePage implements OnInit, OnDestroy, AfterViewInit {
   // ------------------------
 
-  private canvasSizeX = 500;
-  private canvasSizeY = 500;
+  private canvasSizeX = 750;
+  private canvasSizeY = 750;
 
-  private resolution = 50;
+  private resolution = 100;
 
   private r = this.canvasSizeX * 0.3;
 
   private fft;
+  private fftSmoothing = 0.8;
+  private fftBins = 1024;
 
   private mic;
 
@@ -48,7 +50,7 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
       .parent("sketch-canvas");
 
     // Create the FFT analyzer
-    this.fft = new p5.FFT();
+    this.fft = new p5.FFT(this.fftSmoothing, this.fftBins);
 
     // Define the mic input and connect it to the FFT
     this.mic = new p5.AudioIn();
@@ -61,7 +63,7 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
   private loaded(sketch: any) {}
 
   private draw(sketch: any) {
-    sketch.background(51);
+    sketch.background(34, 36, 40);
 
     this.visualizeWaveform(sketch);
   }
@@ -72,7 +74,7 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
 
   private visualizeWaveform(sketch) {
     //make waveform usable
-    const waveform = this.fft.waveform();
+    const waveform = this.fft.waveform(1024);
     const waveInter = p5.prototype.floor(waveform.length / this.resolution);
 
     let reducedWave = [];
@@ -82,7 +84,7 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
 
     sketch.beginShape();
     sketch.noFill();
-    sketch.stroke(255, 204, 0);
+    sketch.stroke(255, 255, 255);
     sketch.strokeWeight(4);
     sketch.translate(sketch.width / 2, sketch.height / 2);
     for (let i = 0; i < this.resolution; i++) {
