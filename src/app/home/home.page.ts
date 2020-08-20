@@ -19,7 +19,7 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
 
   private fft;
   private fftSmoothing = 0.8;
-  private fftBins = 1024;
+  private fftBins = 512;
 
   private mic;
 
@@ -103,6 +103,7 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
         0,
         p5.prototype.TWO_PI
       );
+
       const y = (this.r - this.r * 0.1 + off) * p5.prototype.sin(angle);
       const x = (this.r - this.r * 0.1 + off) * p5.prototype.cos(angle);
 
