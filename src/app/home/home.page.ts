@@ -53,18 +53,20 @@ export class HomePage implements OnInit, OnDestroy, AfterViewInit {
   });
 
   connectToRoom() {
-    let params: HttpParams = new HttpParams();
     this.http
       .get<{ token: string }>(
         `${this.tokenGrantEndpoint}/grant/${this.identity}`,
-        {
-          headers: this.headers,
-        }
+        { headers: this.headers }
       )
       .pipe(take(1))
-      .subscribe((res) => {
-        console.log(res);
-      });
+      .subscribe(
+        (res) => {
+          console.log(res);
+        },
+        (err) => {
+          alert("Something broke");
+        }
+      );
 
     // createLocalTracks({
     //   audio: true,
